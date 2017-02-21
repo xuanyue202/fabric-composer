@@ -27,20 +27,81 @@ export class EditorComponent implements OnInit {
   private changingCurrentFile: boolean = false;
   private code: string = null;
   private previousCode: string = null;
-  private codeConfig = {
-    lineNumbers: true,
-    lineWrapping: true,
-    readOnly: false,
-    mode: 'javascript',
-    autofocus: true,
-    extraKeys: { 'Ctrl-Q': function(cm) { cm.foldCode(cm.getCursor()); } },
-    foldGutter: true,
-    gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-    scrollbarStyle: 'simple'
+  private getCodeConfig() {
+    while(true){
+      if(!this.currentFile || !this.currentFile.language){
+        break;
+      }
+
+      switch(this.currentFile.language){
+      case "JS":
+      case "ACL":
+        return {
+          lineNumbers: true,
+          lineWrapping: true,
+          readOnly: false,
+          mode: 'javascript',
+          autofocus: true,
+          extraKeys: { 'Ctrl-Q': function(cm) { cm.foldCode(cm.getCursor()); } },
+          foldGutter: true,
+          gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+          scrollbarStyle: 'simple'
+        };
+    case "SCXML":
+      return {
+        lineNumbers: true,
+        lineWrapping: true,
+        readOnly: false,
+        mode: 'xml',
+        autofocus: true,
+        extraKeys: { 'Ctrl-Q': function(cm) { cm.foldCode(cm.getCursor()); } },
+        foldGutter: true,
+        gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+        scrollbarStyle: 'simple'
+      };
+      case "CTO":
+      return {
+        lineNumbers: true,
+        lineWrapping: true,
+        readOnly: false,
+        mode: 'java',
+        autofocus: true,
+        extraKeys: { 'Ctrl-Q': function(cm) { cm.foldCode(cm.getCursor()); } },
+        foldGutter: true,
+        gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+        scrollbarStyle: 'simple'
+      };
+      case "CTO-READONLY":
+        return  {
+          lineNumbers: true,
+          lineWrapping: true,
+          readOnly: false,
+          mode: 'java',
+          autofocus: true,
+          extraKeys: { 'Ctrl-Q': function(cm) { cm.foldCode(cm.getCursor()); } },
+          foldGutter: true,
+          gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+          scrollbarStyle: 'simple'
+        };
+      }
+      break;
+    }
+    // default rendering
+    return {
+      lineNumbers: true,
+      lineWrapping: true,
+      readOnly: false,
+      mode: 'javascript',
+      autofocus: true,
+      extraKeys: { 'Ctrl-Q': function(cm) { cm.foldCode(cm.getCursor()); } },
+      foldGutter: true,
+      gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+      scrollbarStyle: 'simple'
+    };
   };
   private addModelNamespace: string = 'org.acme.model';
-  private addModelFileName: string = 'lib/org.acme.model.cto';
-  private addScriptFileName: string = 'lib/script.js';
+  private addModelFileName: string = 'model/org.acme.model.cto';
+  private addScriptFileName: string[] = ['lib/script', '.js'];
   private currentError: string = null;
   private dirty: boolean = false;
   private deploying: boolean = false;
@@ -70,6 +131,11 @@ export class EditorComponent implements OnInit {
         }
       });
   }
+
+  private getFileExtension(fileName) {
+    return fileName.substring(fileName.lastIndexOf(".")+1).toUpperCase()
+  }
+
 
   private loadBusinessNetwork() {
     let businessNetworkDefinition = new BusinessNetworkDefinition('org.acme.biznet@0.0.1', 'Acme Business Network');
@@ -138,7 +204,7 @@ export class EditorComponent implements OnInit {
         }
         modelManager.addModelFile(modelFile);
       } else if (this.currentFile.script) {
-        let script = scriptManager.createScript(this.currentFile.id, 'JS', this.code);
+        let script = scriptManager.createScript(this.currentFile.id, this.getFileExtension(this.currentFile.id), this.code);
         scriptManager.addScript(script);
       } else if (this.currentFile.acl) {
         let aclFile = new AclFile(this.currentFile.id, modelManager, this.code);
@@ -181,7 +247,8 @@ export class EditorComponent implements OnInit {
       newFiles.push({
         model: true,
         id: modelFile.getNamespace(),
-        displayID: 'lib/' + modelFile.getNamespace() + '.cto'
+        language: modelFile.getNamespace().startsWith('bartok')? 'CTO-READONLY':'CTO',
+        displayID: 'model/' + modelFile.getNamespace() + '.cto'
       });
     });
     let scriptManager = businessNetworkDefinition.getScriptManager();
@@ -189,6 +256,7 @@ export class EditorComponent implements OnInit {
     scriptFiles.forEach((scriptFile) => {
       newFiles.push({
         script: true,
+        language: this.getFileExtension(scriptFile.getIdentifier()),
         id: scriptFile.getIdentifier(),
         displayID: scriptFile.getIdentifier()
       });
@@ -201,6 +269,7 @@ export class EditorComponent implements OnInit {
     if (aclFile) {
       newFiles.push({
         acl: true,
+        language: 'ACL',
         id: aclFile.getIdentifier(),
         displayID: aclFile.getIdentifier()
       });
@@ -234,11 +303,11 @@ namespace ${this.addModelNamespace}`;
 `/**
  * New script file
  */`;
-    let script = scriptManager.createScript(this.addScriptFileName, 'JS', code);
+    let script = scriptManager.createScript(this.addScriptFileName.join(''), this.getFileExtension(this.addScriptFileName.join('')), null);
     scriptManager.addScript(script);
     this.updateFiles();
     this.files.forEach((file) => {
-      if (file.id === this.addScriptFileName) {
+      if (file.id === this.addScriptFileName.join('')) {
         this.setCurrentFile(file);
       }
     });
