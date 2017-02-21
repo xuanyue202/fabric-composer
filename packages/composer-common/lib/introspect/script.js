@@ -14,7 +14,6 @@
 
 'use strict';
 
-const JavaScriptParser = require('../codegen/javascriptparser');
 const FunctionDeclaration = require('../introspect/functiondeclaration');
 
 /**
@@ -26,15 +25,17 @@ const FunctionDeclaration = require('../introspect/functiondeclaration');
  * @memberof module:composer-common
  */
 class Script {
-  /**
-   * Create the Script.
-   * <p>
-   * @param {ModelManager} modelManager - The ModelManager associated with this Script
-   * @param {string} identifier - The identifier of the script
-   * @param {string} language - The language type of the script
-   * @param {string} contents - The contents of the script
-   */
-    constructor(modelManager, identifier, language, contents) {
+   
+    /**
+     * Create the Script.
+     * <p>
+     * @param {ModelManager} modelManager - The ModelManager associated with this Script
+     * @param {string} identifier - The identifier of the script
+     * @param {string} language - The language type of the script
+     * @param {string} contents - The contents of the script
+     * @param {ScriptProcessor} scriptProcessor - The script processor
+     */
+    constructor(modelManager, identifier, language, contents, scriptProcessor) {
         this.modelManager = modelManager;
         this.identifier = identifier;
         this.language = language;
@@ -44,17 +45,9 @@ class Script {
         if(!contents) {
             throw new Error('Empty script contents');
         }
-
-        const parser = new JavaScriptParser(this.contents);
-
-        const functions = parser.getFunctions();
-
-        for(let n=0; n < functions.length; n++) {
-            const func = functions[n];
-            const functionDeclaration = new FunctionDeclaration(this.modelManager, this.language, func.name, func.visibility,
-              func.returnType, func.throws, func.parameterNames, func.parameterTypes, func.decorators, func.functionText );
-            functionDeclaration.validate();
-            this.functions.push( functionDeclaration );
+        
+        if(scriptProcessor) {
+            this.functions = scriptProcessor.process(modelManager, identifier, contents);
         }
     }
 

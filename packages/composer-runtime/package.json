@@ -63,6 +63,7 @@
   },
   "dependencies": {
     "composer-common": "^0.4.4",
+    "bartok-runtime-concerto": "^0.1.0",
     "debug": "^2.4.4",
     "fast-json-patch": "^1.1.2",
     "jsonata": "^1.0.10",

@@ -19,6 +19,7 @@ const Api = require('./api');
 const BusinessNetworkDefinition = require('composer-common').BusinessNetworkDefinition;
 const IdentityManager = require('./identitymanager');
 const JSTransactionExecutor = require('./jstransactionexecutor');
+const LanguageManager = require('bartok-runtime-concerto').LanguageManager;
 const Logger = require('composer-common').Logger;
 const LRU = require('lru-cache');
 const QueryExecutor = require('./queryexecutor');
@@ -135,12 +136,36 @@ class Context {
             .then(() => {
                 LOG.debug(method, 'Installing default JavaScript transaction executor');
                 this.addTransactionExecutor(new JSTransactionExecutor());
+
+                LanguageManager.installLanguagesToContext(this);
             })
             .then(() => {
                 LOG.exit(method);
             });
 
     }
+
+    /**
+     * Add a script processor.
+     * @param {ScriptProcessor} scriptProcessor The script processor.
+     */
+    addScriptProcessor(scriptProcessor) {
+        const method = 'addScriptProcessor';
+        LOG.entry(method, scriptProcessor);
+        this.businessNetworkDefinition.getScriptManager().addScriptProcessor(scriptProcessor);
+        LOG.exit(method);
+    }
+
+    /**
+     * Add a language support into Concerto runtime
+     * @param {ScriptProcessor} scriptProcessor The script processor for the language.
+     * @param {TransactionExecutor} transactionExecutor The transaction executor for the language.
+     */
+    addLanguageSupport(scriptProcessor, transactionExecutor) {
+        this.addScriptProcessor(scriptProcessor);
+        this.addTransactionExecutor(transactionExecutor);
+    }
+
 
     /**
      * Get the data service provided by the chaincode container.
