@@ -75,6 +75,12 @@
     "octokat": "^0.6.2"
   },
   "devDependencies": {
+    "bartok-common": "^0.1.0",
+    "bartok-runtime-concerto": "^0.1.0",
+    "bartok-scxml": "^0.1.0",
+    "scxml": "^3.0.2",
+    "module":"1.2.5",
+    "vm-browserify2": "0.0.6",
     "composer-admin": "^0.4.4",
     "composer-client": "^0.4.4",
     "composer-connector-proxy": "^0.4.4",
