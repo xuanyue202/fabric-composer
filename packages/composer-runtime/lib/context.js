@@ -137,7 +137,7 @@ class Context {
                 LOG.debug(method, 'Installing default JavaScript transaction executor');
                 this.addTransactionExecutor(new JSTransactionExecutor());
 
-                let languageManager = new LanguageManager();
+                let languageManager = new LanguageManager(this.businessNetworkDefinition);
                 languageManager.installLanguagesToContext(this);
             })
             .then(() => {
