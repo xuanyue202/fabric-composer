@@ -65,6 +65,9 @@
     "webpack-dev-server": "webpack-dev-server",
     "webpack": "webpack"
   },
+  "browser": {
+    "vm": "vm-browserify2"
+  },
   "dependencies": {
     "composer-common": "^0.4.4",
     "composer-connector-server": "^0.4.4",
@@ -81,6 +84,7 @@
     "scxml": "^3.0.2",
     "module":"1.2.5",
     "vm-browserify2": "0.0.6",
+    "graceful-fs": "^4.1.11",
     "composer-admin": "^0.4.4",
     "composer-client": "^0.4.4",
     "composer-connector-proxy": "^0.4.4",
