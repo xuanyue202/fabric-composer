@@ -94,6 +94,10 @@ class ScriptManager {
         this.addScript(script);
     }
 
+    getModelManager() {
+        return this.modelManager; 
+    }
+
     /**
      * Remove the Script
      * @param {string} identifier - The identifier of the script to remove
@@ -151,7 +155,7 @@ class ScriptManager {
      * Add a transaction executor.
      * @param {ScriptProcessor} scriptProcessor The script processor.
      */
-    addScriptProcessor(scriptProcessor) {
+    static addScriptProcessor(scriptProcessor) {
         let replaced = _scriptProcessors.some((existingScriptProcessor, index) => {
             if (scriptProcessor.getType() === existingScriptProcessor.getType()) {
                 console.log('Found existing executor for type, replacing', index, scriptProcessor.getType());

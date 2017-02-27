@@ -65,6 +65,7 @@ module.exports.FunctionDeclaration = require('./lib/introspect/functiondeclarati
 module.exports.FSConnectionProfileStore = require('./lib/fsconnectionprofilestore');
 module.exports.Globalize = require('./lib/globalize');
 module.exports.Introspector = require('./lib/introspect/introspector');
+module.exports.JSScriptProcessor = require('./lib/introspect/jsscriptprocessor');
 module.exports.Logger = require('./lib/log/logger');
 module.exports.ModelFile = require('./lib/introspect/modelfile');
 module.exports.ModelManager = require('./lib/modelmanager');
