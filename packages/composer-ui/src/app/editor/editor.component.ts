@@ -15,6 +15,8 @@ import 'codemirror/addon/fold/markdown-fold';
 import 'codemirror/addon/fold/xml-fold';
 import 'codemirror/addon/scroll/simplescrollbars';
 
+const _languageManager = require('composer-runtime').LanguageManager
+
 @Component({
   selector: 'app-editor',
   templateUrl: './editor.component.html',
@@ -27,43 +29,23 @@ export class EditorComponent implements OnInit {
   private changingCurrentFile: boolean = false;
   private code: string = null;
   private previousCode: string = null;
+  private LanguageManager
   private getCodeConfig() {
-    while(true){
       if(!this.currentFile || !this.currentFile.language){
-        break;
+        return {};
       }
+
+      if(_languageManager.getLanguages().includes(this.currentFile.language)){
+        return _languageManager.getCodeMirrorStyle(this.currentFile.language);
+      }
+
       switch(this.currentFile.language){
-      case "JS":
       case "ACL":
         return {
           lineNumbers: true,
           lineWrapping: true,
           readOnly: false,
           mode: 'javascript',
-          autofocus: true,
-          extraKeys: { 'Ctrl-Q': function(cm) { cm.foldCode(cm.getCursor()); } },
-          foldGutter: true,
-          gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-          scrollbarStyle: 'simple'
-        };
-      case "SCXML":
-        return {
-          lineNumbers: true,
-          lineWrapping: true,
-          readOnly: false,
-          mode: 'xml',
-          autofocus: true,
-          extraKeys: { 'Ctrl-Q': function(cm) { cm.foldCode(cm.getCursor()); } },
-          foldGutter: true,
-          gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-          scrollbarStyle: 'simple'
-        };
-      case "CTO-READONLY":
-        return  {
-          lineNumbers: true,
-          lineWrapping: true,
-          readOnly: true,
-          mode: 'java',
           autofocus: true,
           extraKeys: { 'Ctrl-Q': function(cm) { cm.foldCode(cm.getCursor()); } },
           foldGutter: true,
@@ -82,8 +64,6 @@ export class EditorComponent implements OnInit {
           gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
           scrollbarStyle: 'simple'
         };
-      }
-      break;
     }
     // default rendering
     return {
@@ -98,6 +78,7 @@ export class EditorComponent implements OnInit {
       scrollbarStyle: 'simple'
     };
   };
+  private languages: string[];
   private addModelNamespace: string = 'org.acme.model';
   private addModelFileName: string = 'model/org.acme.model.cto';
   private addScriptFileName: string[] = ['lib/script', '.js'];
@@ -117,6 +98,7 @@ export class EditorComponent implements OnInit {
   ngOnInit(): Promise<any> {
     return this.initializationService.initialize()
       .then(() => {
+        this.languages = _languageManager.getLanguages().map((lang) => lang.toLowerCase());
         this.loadBusinessNetwork();
         this.updateFiles();
         if (this.files.length) {
@@ -248,8 +230,8 @@ export class EditorComponent implements OnInit {
       newFiles.push({
         model: true,
         id: modelFile.getNamespace(),
-        language: isBartok? 'CTO-READONLY':'CTO',
-        displayID: (isBartok? 'bartok/' : 'model/') + modelFile.getNamespace() + '.cto'
+        language: 'CTO',
+        displayID: 'model/' + modelFile.getNamespace() + '.cto'
       });
     });
     let scriptManager = businessNetworkDefinition.getScriptManager();

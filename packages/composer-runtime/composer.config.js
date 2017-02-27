@@ -27,9 +27,28 @@ module.exports = function (options) {
               'description' : 'Built-in JS language support',
               'scriptprocessor' : new JSScriptProcessor(),
               'transactionexecutor' : new JSTransactionExecutor(),
+              'codemirror' : {
+                    lineNumbers: true,
+                    lineWrapping: true,
+                    readOnly: false,
+                    mode: 'javascript',
+                    autofocus: true,
+                    extraKeys: { 'Ctrl-Q': function(cm) { cm.foldCode(cm.getCursor()); } },
+                    foldGutter: true,
+                    gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+                    scrollbarStyle: 'simple'
+              },
           },
           'SCXML' : Object.assign({
               'description' : 'SCXML language support',
+              'codemirror' : {
+                    lineNumbers: true,
+                    readOnly: false,
+                    mode: 'XML',
+                    autofocus: true,
+                    extraKeys: { 'Ctrl-Q': function(cm) { cm.foldCode(cm.getCursor()); } },
+                    scrollbarStyle: 'simple'
+              },
            }, languageRegistry.getLanguage("SCXML")),
       }
   };

@@ -26,12 +26,9 @@ class LanguageManager {
     constructor(){
         let config = composerConfig({});
         this.languages = config.languages? config.languages : [];
-
-        console.log('LanguageManager!!!!!!!!!!!!!!!!!', this.getScriptProcessors());
         
         // Add the script processors to the script manager
         this.getScriptProcessors().forEach(function(scriptprocessor){
-            console.log("scriptprocessor", scriptprocessor)
             ScriptManager.addScriptProcessor(scriptprocessor);
         });
     }
@@ -41,6 +38,14 @@ class LanguageManager {
      */
     getLanguages() {
         return Object.getOwnPropertyNames(this.languages);
+    }
+
+    /**
+     * Get all the script code mirror style by language.
+     * @param language The language to be specified. 
+     */
+    getCodeMirrorStyle(language) {
+        return this.languages[language].codemirror;
     }
 
    

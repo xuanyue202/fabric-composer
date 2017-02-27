@@ -74,8 +74,7 @@
           </div>
           <div class="col-lg-4">
             <select class="form-control" [(ngModel)]="addScriptFileName[1]">
-                <option >.js</option>
-                <option>.scxml</option>
+                <option *ngFor="let language of languages" >.{{ language }}</option>
             </select>
           </div>
         </div>
