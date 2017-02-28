@@ -8,6 +8,8 @@ import { ModalModule, TooltipModule } from 'ng2-bootstrap';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { LocalStorageModule } from 'angular-2-local-storage';
 
+import {APP_BASE_HREF} from '@angular/common';
+
 /*
  * Platform and Environment providers/directives/pipes
  */
@@ -26,10 +28,13 @@ import { ParticipantRegistryComponent, AddParticipantComponent, UpdateParticipan
 import { TransactionRegistryComponent, SubmitTransactionComponent } from './transactionregistry';
 import { SettingsComponent } from './settings';
 import { AddIdentityComponent } from './addidentity';
+import { AboutComponent } from './about';
 import { BusyComponent } from './busy';
 import { ErrorComponent } from './error';
 import { ResetComponent } from './reset';
 import { ImportComponent } from './import';
+import { ExportComponent } from './export';
+
 import { GithubComponent } from './github';
 import { NoContentComponent } from './no-content';
 import { CodemirrorModule } from 'ng2-codemirror';
@@ -41,7 +46,15 @@ import { WalletService } from './wallet.service';
 import { IdentityService } from './identity.service';
 import { NotificationService } from './notification.service';
 import { InitializationService } from './initialization.service';
-import { SampleBusinessNetworkService } from "./services/samplebusinessnetwork.service";
+import { SampleBusinessNetworkService } from './services/samplebusinessnetwork.service';
+import { AboutService } from './services/about.service';
+
+let actionBasedIcons = require.context('../assets/svg/action-based', false, /.*\.svg$/);
+actionBasedIcons.keys().forEach(actionBasedIcons);
+let formattingIcons = require.context('../assets/svg/formatting', false, /.*\.svg$/);
+formattingIcons.keys().forEach(formattingIcons);
+let objectBasedIcons = require.context('../assets/svg/object-based', false, /.*\.svg$/);
+objectBasedIcons.keys().forEach(objectBasedIcons);
 
 // Application wide providers
 const APP_PROVIDERS = [
@@ -61,7 +74,9 @@ type StoreType = {
 @NgModule({
   bootstrap: [ AppComponent ],
   entryComponents: [
-    ImportComponent
+    ImportComponent,
+    ExportComponent,
+    ErrorComponent
   ],
   declarations: [
     AppComponent,
@@ -87,8 +102,10 @@ type StoreType = {
     ErrorComponent,
     ResetComponent,
     ImportComponent,
+    ExportComponent,
     GithubComponent,
-    NoContentComponent
+    NoContentComponent,
+    AboutComponent
   ],
   imports: [ // import Angular's modules
     BrowserModule,
@@ -107,6 +124,7 @@ type StoreType = {
   providers: [ // expose our Services and Providers into Angular's dependency injection
     ENV_PROVIDERS,
     APP_PROVIDERS,
+    {provide: APP_BASE_HREF, useValue: '/'},
     AdminService,
     ClientService,
     ConnectionProfileService,
@@ -114,7 +132,8 @@ type StoreType = {
     IdentityService,
     NotificationService,
     InitializationService,
-    SampleBusinessNetworkService
+    SampleBusinessNetworkService,
+    AboutService
   ]
 })
 export class AppModule {

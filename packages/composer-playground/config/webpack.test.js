@@ -20,6 +20,7 @@ const ContextReplacementPlugin = require('webpack/lib/ContextReplacementPlugin')
 const ENV = process.env.ENV = process.env.NODE_ENV = 'test';
 const DOCKER = !!process.env.DOCKER;
 const DOCKER_COMPOSE = !!process.env.DOCKER_COMPOSE;
+const PLAYGROUND_API = process.env.PLAYGROUND_API;
 
 /**
  * Webpack configuration
@@ -102,23 +103,23 @@ module.exports = function (options) {
          *
          * See: https://github.com/s-panferov/awesome-typescript-loader
          */
-        {
-          test: /\.ts$/,
-          loader: 'awesome-typescript-loader',
-          query: {
-            // use inline sourcemaps for "karma-remap-coverage" reporter
-            sourceMap: false,
-            inlineSourceMap: true,
-            compilerOptions: {
+        // {
+        //   test: /\.ts$/,
+        //   loader: 'awesome-typescript-loader',
+        //   query: {
+        //     // use inline sourcemaps for "karma-remap-coverage" reporter
+        //     sourceMap: false,
+        //     inlineSourceMap: true,
+        //     compilerOptions: {
 
-              // Remove TypeScript helpers to be injected
-              // below by DefinePlugin
-              removeComments: true
+        //       // Remove TypeScript helpers to be injected
+        //       // below by DefinePlugin
+        //       removeComments: true
 
-            }
-          },
-          exclude: [/\.e2e\.ts$/]
-        },
+        //     }
+        //   },
+        //   exclude: [/\.e2e\.ts$/]
+        // },
 
         /**
          * Json loader support for *.json files.
@@ -212,7 +213,26 @@ module.exports = function (options) {
           query: {
             presets: ['es2015']
           }
-        }
+        },
+
+        /*
+        * SASS loader support for *.scss files
+        * Returns file content as string
+        *
+        * See: https://github.com/webpack/raw-loader
+        */
+
+        {
+          test: /\.scss$/,
+          exclude: /node_modules/,
+          loaders: ['raw-loader', 'sass-loader'] // sass-loader not scss-loader
+        },
+
+        {
+          test: /\.ts$/,
+          loaders: ['awesome-typescript-loader', 'angular2-template-loader'],
+          exclude: [/\.e2e\.ts$/]
+        },
 
       ]
     },
@@ -238,7 +258,8 @@ module.exports = function (options) {
         'ENV': JSON.stringify(ENV),
         'HMR': false,
         'DOCKER': DOCKER,
-        'DOCKER_COMPOSE': DOCKER_COMPOSE
+        'DOCKER_COMPOSE': DOCKER_COMPOSE,
+        'PLAYGROUND_API' : PLAYGROUND_API
         /* 'process.env': {
           'ENV': JSON.stringify(ENV),
           'NODE_ENV': JSON.stringify(ENV),
