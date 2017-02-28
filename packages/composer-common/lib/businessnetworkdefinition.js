@@ -197,7 +197,7 @@ class BusinessNetworkDefinition {
                     // console.log('What are the jsObjectsArray?',jsObjectArray);
                     LOG.debug(method, 'Adding JavaScript files to script manager');
                     jsScriptFiles.forEach(function(obj) {
-                        let jsObject = businessNetworkDefinition.scriptManager.createScript(obj.name,  obj.name.substring(obj.name.lastIndexOf(".")+1).toUpperCase(), obj.contents);
+                        let jsObject = businessNetworkDefinition.scriptManager.createScript(obj.name, obj.name.split('.').pop().toUpperCase(), obj.contents);
                         businessNetworkDefinition.scriptManager.addScript(jsObject); // Adds all js files to script manager
                     });
                     LOG.debug(method, 'Added JavaScript files to script manager');

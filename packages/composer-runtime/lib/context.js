@@ -147,28 +147,6 @@ class Context {
     }
 
     /**
-     * Add a script processor.
-     * @param {ScriptProcessor} scriptProcessor The script processor.
-     */
-    addScriptProcessor(scriptProcessor) {
-        const method = 'addScriptProcessor';
-        LOG.entry(method, scriptProcessor);
-        this.businessNetworkDefinition.getScriptManager().addScriptProcessor(scriptProcessor);
-        LOG.exit(method);
-    }
-
-    /**
-     * Add a language support into Concerto runtime
-     * @param {ScriptProcessor} scriptProcessor The script processor for the language.
-     * @param {TransactionExecutor} transactionExecutor The transaction executor for the language.
-     */
-    addLanguageSupport(scriptProcessor, transactionExecutor) {
-        this.addScriptProcessor(scriptProcessor);
-        this.addTransactionExecutor(transactionExecutor);
-    }
-
-
-    /**
      * Get the data service provided by the chaincode container.
      * @abstract
      * @return {DataService} The data service provided by the chaincode container.

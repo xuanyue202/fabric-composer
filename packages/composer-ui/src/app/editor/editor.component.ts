@@ -114,7 +114,7 @@ export class EditorComponent implements OnInit {
   }
 
   private getFileExtension(fileName) {
-    return fileName.substring(fileName.lastIndexOf(".")+1).toUpperCase()
+    return fileName.split('.').pop().toUpperCase();
   }
 
 

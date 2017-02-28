@@ -82,7 +82,7 @@
     "octokat": "^0.6.2"
   },
   "devDependencies": {
-	"bartok-common": "^0.1.0",
+    "bartok-common": "^0.1.0",
     "bartok-runtime-concerto": "^0.1.0",
     "bartok-scxml": "^0.1.0",
     "scxml": "^3.0.2",
